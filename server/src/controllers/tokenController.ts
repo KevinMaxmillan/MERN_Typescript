@@ -49,8 +49,8 @@ export const refreshToken = asyncHandler(async (req: Request, res: Response, nex
 
         res.cookie('accessToken', newAccessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: true,
+            sameSite: 'none',
         });
 
         logger.info('New access token generated');
