@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { UserProfile } from "../utils/interfaces";
+import { UserProfile } from "../interfaces/authInterfaces";
 
 interface UserState {
   user: UserProfile | null;

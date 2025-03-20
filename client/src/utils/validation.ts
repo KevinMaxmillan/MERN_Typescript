@@ -1,4 +1,4 @@
-import { LoginData, RegisterData } from "./interfaces";
+import { LoginData, RegisterData } from "../interfaces/authInterfaces";
 
 export function validateLogin(data: LoginData): Record<string, string> {
   const errors: Record<string, string> = {};

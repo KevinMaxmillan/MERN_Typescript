@@ -46,7 +46,12 @@ export default function Dashboard() {
 
   const handleUpdatePost = () => {
     if (!editPost) return;
-    updatePostMutation.mutate(editPost);
+    
+    updatePostMutation.mutate({
+      id: editPost.id, 
+      updatedData: { title: editPost.title, body: editPost.body, userId: editPost.userId }
+    });
+  
     setEditPost(null);
     setIsModalOpen(false);
   };

@@ -30,8 +30,8 @@ export const useAddPost = () => {
   export const useUpdatePost = () => {
     const queryClient = useQueryClient();
   
-    return useMutation<Post, AuthError, Post>({
-      mutationFn: updatePost,
+    return useMutation<Post, AuthError, { id: number; updatedData: Omit<Post, "id"> }>({
+      mutationFn: ({ id, updatedData }) => updatePost(id, updatedData),
       onSuccess: () => {
         toast.success("Post updated successfully!");
         queryClient.invalidateQueries({ queryKey: ["userPosts"] });
