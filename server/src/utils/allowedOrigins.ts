@@ -1,6 +1,6 @@
 const allowedOrigins = [
     'http://localhost:5173',
-    'https://kevinmaxmillanmernfrontend.netlify.app/'
+    'http://kevinmaxmillanmernfrontend.netlify.app/'
     
 ];
 
