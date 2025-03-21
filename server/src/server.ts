@@ -18,10 +18,10 @@ const app = express();
 
 
 //middlewares
+app.use(cors(corsOptions));
 app.use(morganLogger);
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 
 
