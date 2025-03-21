@@ -67,10 +67,15 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
+    res.clearCookie('accessToken', { httpOnly: true, secure: true, sameSite: 'none' });
+    res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'none' });
+
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
+        partitioned: true,
+
 
     });
 
@@ -78,6 +83,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
         httpOnly: true,
         secure: true,
         sameSite: 'none',
+        partitioned: true,
 
     });
 
@@ -106,14 +112,18 @@ export const logoutUser = asyncHandler(async (req: Request, res: Response, next:
 
         res.clearCookie('refreshToken', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', 
-            sameSite: 'strict',
+            secure: true,
+            sameSite: 'none',
+            partitioned: true,
+
         });
 
         res.clearCookie('accessToken', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', 
-            sameSite: 'strict',
+            secure: true,
+            sameSite: 'none',
+            partitioned: true,
+
         });
 
         logger.info('User logged out successfully.');
