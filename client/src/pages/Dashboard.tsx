@@ -23,38 +23,41 @@ import {
 
 export default function Dashboard() {
   const { data: user } = useUserProfile();
-  const { data: posts, isLoading, isError } = useUserPosts(user?.numericID);
+  const { data: posts, isLoading } = useUserPosts();
   const addPostMutation = useAddPost();
   const updatePostMutation = useUpdatePost();
   const deletePostMutation = useDeletePost();
 
-  const [newPost, setNewPost] = useState({ title: "", body: "" });
+  const [newPost, setNewPost] = useState({ title: "", description: "" });
   const [editPost, setEditPost] = useState<Post | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
+
   const handleAddPost = () => {
     if (!user) return;
+  
     addPostMutation.mutate({
-      userId: user.numericID,
       title: newPost.title,
-      body: newPost.body,
+      description: newPost.description, 
     });
-    setNewPost({ title: "", body: "" });
+  
+    setNewPost({ title: "", description: "" });
     setIsModalOpen(false);
   };
 
   const handleUpdatePost = () => {
     if (!editPost) return;
-    
+  
     updatePostMutation.mutate({
-      id: editPost.id, 
-      updatedData: { title: editPost.title, body: editPost.body, userId: editPost.userId }
+      postID: editPost.postID,
+      updatedData: { title: editPost.title, description: editPost.description },
     });
   
     setEditPost(null);
     setIsModalOpen(false);
   };
+  
 
   const openAddPostModal = () => {
     setIsModalOpen(true);
@@ -73,18 +76,18 @@ export default function Dashboard() {
 
       <h2>Your Posts</h2>
       {isLoading && <p>Loading posts...</p>}
-      {isError && <p>Failed to load posts.</p>}
+      {/* {isError && <p>Failed to load posts.</p>} */}
 
       <AddPostButton onClick={openAddPostModal}>Add New Post</AddPostButton>
 
       <PostsContainer>
         {posts?.length ? (
           posts.map((post) => (
-            <PostItem key={post.id}>
+            <PostItem key={post.postID}>
               <PostTitle>{post.title}</PostTitle>
-              <PostBody>{post.body}</PostBody>
+              <PostBody>{post.description}</PostBody>
               <div>
-                <PostButton onClick={() => deletePostMutation.mutate(post.id)}>Delete</PostButton>
+                <PostButton onClick={() => deletePostMutation.mutate(post.postID)}>Delete</PostButton>
                 <CancelButton onClick={() => openEditPostModal(post)}>Edit</CancelButton>
               </div>
             </PostItem>
@@ -109,8 +112,8 @@ export default function Dashboard() {
                 />
                 <Textarea
                   placeholder="Body"
-                  value={newPost.body}
-                  onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
+                  value={newPost.description}
+                  onChange={(e) => setNewPost({ ...newPost, description: e.target.value })}
                 />
                 <ActionButton onClick={handleAddPost}>Add Post</ActionButton>
                 <CancelButton onClick={() => setIsModalOpen(false)}>Cancel</CancelButton>
@@ -126,8 +129,8 @@ export default function Dashboard() {
                 />
                 <Textarea
                   placeholder="Body"
-                  value={editPost?.body}
-                  onChange={(e) => setEditPost({ ...editPost!, body: e.target.value })}
+                  value={editPost?.description}
+                  onChange={(e) => setEditPost({ ...editPost!, description: e.target.value })}
                 />
                 <ActionButton onClick={handleUpdatePost}>Update Post</ActionButton>
                 <CancelButton onClick={() => setIsModalOpen(false)}>Cancel</CancelButton>

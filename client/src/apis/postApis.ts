@@ -1,25 +1,24 @@
 
 import API from "./baseApis";
 import { ApiEndpoints } from "../utils/apiEndpoints";
-import { Post } from "../interfaces/postsInterfaces";
+import { Post, GetPostsResponse } from "../interfaces/postsInterfaces";
 
+export const fetchUserPosts = async (): Promise<Post[]> => {
+  const response = await API.get<GetPostsResponse>(ApiEndpoints.GET_POSTS);
+  return response.data.posts; 
+};
 
-export const fetchUserPosts = async (numericID: number): Promise<Post[]> => {
-  const response = await API.get<Post[]>(`${ApiEndpoints.POSTS}?userId=${numericID}`);
+export const addPost = async (post: { title: string; description: string }): Promise<Post> => {
+  const response = await API.post<Post>(ApiEndpoints.CREATE_POST, post);
   return response.data;
 };
 
-export const addPost = async (post: Omit<Post, "id">): Promise<Post> => {
-  const response = await API.post<Post>(ApiEndpoints.POSTS, post);
+export const updatePost = async (postID: number, updatedData: { title: string; description: string }): Promise<Post> => {
+  const response = await API.put<Post>(`${ApiEndpoints.UPDATE_POST}/${postID}`, updatedData);
   return response.data;
 };
 
-export const updatePost = async (id: number, updatedData: Omit<Post, 'id'>): Promise<Post> => {
-  const response = await API.put<Post>(`${ApiEndpoints.POSTS}/${id}`, updatedData);
-  return response.data;
-};
-
-export const deletePost = async (id: number): Promise<{ message: string }> => {
-  const response = await API.delete<{ message: string }>(`${ApiEndpoints.POSTS}/${id}`);
+export const deletePost = async (postID: number): Promise<{ message: string }> => {
+  const response = await API.delete<{ message: string }>(`${ApiEndpoints.DELETE_POST}/${postID}`);
   return response.data;
 };

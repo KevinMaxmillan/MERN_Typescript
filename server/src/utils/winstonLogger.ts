@@ -1,7 +1,6 @@
 import winston from 'winston';
 import 'colors';
 
-// Configure winston logger
 const logLevels = {
   levels: {
     error: 0,
@@ -10,7 +9,7 @@ const logLevels = {
     http: 3,
     verbose: 4,
     debug: 5,
-    silly: 6
+    silly: 6,
   },
   colors: {
     error: 'red',
@@ -19,49 +18,34 @@ const logLevels = {
     http: 'magenta',
     verbose: 'cyan',
     debug: 'blue',
-    silly: 'grey'
-  }
+    silly: 'grey',
+  },
 };
 
 winston.addColors(logLevels.colors);
 
-// Logger configuration
 const logger = winston.createLogger({
   levels: logLevels.levels,
+  format: winston.format.combine(
+    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.colorize(),
+    winston.format.printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`)
+  ),
   transports: [
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.timestamp(), 
-        winston.format.printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`) 
-      ),
       level: 'debug',
+      stderrLevels: ['error'],
     }),
-
     new winston.transports.File({
       filename: 'logs/application.log',
       level: 'info',
       format: winston.format.combine(
         winston.format.timestamp(),
-        winston.format.json() 
+        winston.format.json()
       ),
-    })
-  ]
+      handleExceptions: true,
+    }),
+  ],
 });
 
-
-class Logger {
-  private static loggerInstance: winston.Logger;
-
-  private constructor() {}
-
-  public static get logger(): winston.Logger {
-    if (!Logger.loggerInstance) {
-      Logger.loggerInstance = logger;
-    }
-    return Logger.loggerInstance;
-  }
-}
-
-
-export default Logger.logger;
+export default logger;

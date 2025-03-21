@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import corsOptions from './utils/corsConfig';
 import errorHandler from './middleware/errorHandler';
 import authRoutes from './routes/authRoutes';
+import postRoutes from './routes/postRoutes';
 
 
 
@@ -26,6 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 
 
 app.use('/', authRoutes);
+app.use('/', postRoutes);
 
 
 app.use(errorHandler);

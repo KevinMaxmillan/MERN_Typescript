@@ -2,36 +2,40 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchUserPosts,addPost, updatePost, deletePost } from "../apis/postApis";
 import { Post } from "../interfaces/postsInterfaces";
 import { AuthError } from "../interfaces/authInterfaces";
+import { useUserStore } from '../store/authStore';
 import { toast } from "react-hot-toast";
 
-export const useUserPosts = (numericID?: number) => {
+
+export const useUserPosts = () => {
+  const { user } = useUserStore(); 
+
   return useQuery<Post[], AuthError>({
-    queryKey: ["userPosts", numericID],
-    queryFn: () => fetchUserPosts(numericID!),
-    enabled: !!numericID, 
+    queryKey: ["userPosts"],
+    queryFn: fetchUserPosts,
+    enabled: !!user?.numericID, 
   });
 };
 
 export const useAddPost = () => {
-    const queryClient = useQueryClient();
-  
-    return useMutation<Post, AuthError, Omit<Post, "id">>({
-      mutationFn: addPost,
-      onSuccess: () => {
-        toast.success("Post added successfully!");
-        queryClient.invalidateQueries({ queryKey: ["userPosts"] });
-      },
-      onError: () => {
-        toast.error("Failed to add post.");
-      },
-    });
-  };
-  
+  const queryClient = useQueryClient();
+
+  return useMutation<Post, AuthError, { title: string; description: string }>({
+    mutationFn: addPost,
+    onSuccess: () => {
+      toast.success("Post added successfully!");
+      queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+    },
+    onError: () => {
+      toast.error("Failed to add post.");
+    },
+  });
+};
+
   export const useUpdatePost = () => {
     const queryClient = useQueryClient();
   
-    return useMutation<Post, AuthError, { id: number; updatedData: Omit<Post, "id"> }>({
-      mutationFn: ({ id, updatedData }) => updatePost(id, updatedData),
+    return useMutation<Post, AuthError, { postID: number; updatedData: { title: string; description: string } }>({
+      mutationFn: ({ postID, updatedData }) => updatePost(postID, updatedData),
       onSuccess: () => {
         toast.success("Post updated successfully!");
         queryClient.invalidateQueries({ queryKey: ["userPosts"] });
@@ -46,7 +50,7 @@ export const useAddPost = () => {
     const queryClient = useQueryClient();
   
     return useMutation<{ message: string }, AuthError, number>({
-      mutationFn: (postId) => deletePost(postId), 
+      mutationFn: (postID) => deletePost(postID),
       onSuccess: () => {
         toast.success("Post deleted successfully!");
         queryClient.invalidateQueries({ queryKey: ["userPosts"] });

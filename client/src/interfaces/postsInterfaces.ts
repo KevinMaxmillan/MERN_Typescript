@@ -1,6 +1,11 @@
 export interface Post {
-    id: number;
+    postID:number
     userId: number;
     title: string;
-    body: string;
+    description: string;
 }
+
+export interface GetPostsResponse {
+    success: boolean;
+    posts: Post[];
+  }
