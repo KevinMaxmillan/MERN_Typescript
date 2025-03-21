@@ -51,7 +51,6 @@ export const refreshToken = asyncHandler(async (req: Request, res: Response, nex
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-            
         });
 
         logger.info('New access token generated');

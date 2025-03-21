@@ -71,7 +71,6 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        
 
     });
 
@@ -79,7 +78,6 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        
 
     });
 
