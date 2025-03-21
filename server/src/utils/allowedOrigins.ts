@@ -1,5 +1,6 @@
 const allowedOrigins = [
-    'https://kevinmaxmillanmernfrontend.netlify.app/',
+    'https://kevinmaxmillanmernfrontend.netlify.app',
+  
     
     
 ];
