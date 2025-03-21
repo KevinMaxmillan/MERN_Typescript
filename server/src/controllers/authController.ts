@@ -71,6 +71,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
         httpOnly: true,
         secure: true,
         sameSite: 'none',
+        partitioned: true,
 
     });
 
@@ -78,6 +79,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
         httpOnly: true,
         secure: true,
         sameSite: 'none',
+        partitioned: true,
 
     });
 
