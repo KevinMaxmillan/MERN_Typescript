@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 // Container for the entire dashboard
 export const DashboardContainer = styled.div`
-  margin-top: 100px;  /* Keep the space from the top */
+  margin-top: 100px;  
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,17 +13,17 @@ export const DashboardContainer = styled.div`
   min-height: 100vh;
   
   margin-left: auto;
-  margin-right: auto;  /* Centers the container horizontally */
+  margin-right: auto;  
 `;
 
 
-// Welcome message style
+
 export const WelcomeMessage = styled.h1`
   text-align: center;
   margin-bottom: 40px;
 `;
 
-// Add Post button
+
 export const AddPostButton = styled.button`
   background-color: #28a745;
   color: white;
@@ -40,12 +40,16 @@ export const AddPostButton = styled.button`
   }
 `;
 
-// Posts container and individual post styles
+
 export const PostsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  width: 800px; 
+  max-height: 100vh; 
+  overflow-y: auto; 
 `;
+
 
 export const PostItem = styled.div`
   background-color: #1e1e1e;
@@ -83,7 +87,7 @@ export const PostButton = styled.button`
   }
 `;
 
-// Modal overlay for Add and Edit Post forms
+
 export const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -97,7 +101,7 @@ export const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
-// Modal container for the forms
+
 export const ModalContainer = styled.div`
   background-color: #2c2c2c;
   padding: 30px;
@@ -106,7 +110,7 @@ export const ModalContainer = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 `;
 
-// Form for adding and editing posts
+
 export const AddPostForm = styled.div`
   display: flex;
   flex-direction: column;

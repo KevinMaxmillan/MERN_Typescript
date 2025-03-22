@@ -4,6 +4,8 @@ import { CustomError } from '../hooks/customError';
 import asyncHandler from 'express-async-handler';
 import { getUserFromToken } from '../middleware/findUser'; 
 
+
+//create post
 export const createPost = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const userId = await getUserFromToken(req, res, next); 
 
@@ -26,6 +28,8 @@ export const createPost = asyncHandler(async (req: Request, res: Response, next:
     });
 });
 
+
+//get all posts
 export const getAllPosts = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const userId = await getUserFromToken(req, res, next); 
 
@@ -41,6 +45,7 @@ export const getAllPosts = asyncHandler(async (req: Request, res: Response, next
     });
 });
 
+//Delete post
 export const deletePost = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const userId = await getUserFromToken(req, res, next); 
     const { postID } = req.params;
@@ -57,6 +62,7 @@ export const deletePost = asyncHandler(async (req: Request, res: Response, next:
     });
 });
 
+//Update post
 export const updatePost = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const userId = await getUserFromToken(req, res, next); 
     const { postID } = req.params;

@@ -4,7 +4,6 @@ import { refreshToken } from '../controllers/tokenController';
 import { authMiddleware } from '../middleware/authHandler';
 const router = Router();
 
-// Route to register a new user
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/logout', logoutUser);

@@ -22,6 +22,7 @@ export const registerUser = async (data: RegisterData): Promise<RegisterResponse
     const response = await API.post<{ message: string }>(ApiEndpoints.LOGOUT);
     return response.data;
   };
+  
 
 API.interceptors.response.use(
   (response) => response,

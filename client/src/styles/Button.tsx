@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  className?: string; // Use className to handle styles
+  className?: string; 
 }
 
 export default function Button({ children, className, ...rest }: ButtonProps) {

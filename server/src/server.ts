@@ -25,14 +25,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
-
+//routes
 app.use('/', authRoutes);
 app.use('/', postRoutes);
 
 
 app.use(errorHandler);
 
-// Start the server
+
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, (): void => {
     Logger.info(`Server is running on port ${PORT}`);
