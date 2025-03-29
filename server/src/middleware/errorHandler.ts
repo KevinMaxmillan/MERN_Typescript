@@ -1,11 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { CustomError } from '../hooks/customError';
 import logger from '../utils/winstonLogger';
 
-const errorHandler = (err: CustomError, req: Request, res: Response, next: NextFunction): void => {
-    const statusCode = err.statusCode || 500;
+const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
+    const statusCode = (err as any).statusCode || 500;
     const message = err.message || 'Internal Server Error';
-
 
     if (statusCode >= 500) {
         logger.error(`Internal Server Error: ${message}`);
@@ -16,7 +14,6 @@ const errorHandler = (err: CustomError, req: Request, res: Response, next: NextF
     } else {
         logger.debug(`Unhandled Error: ${statusCode} - ${message}`);
     }
-
 
     res.status(statusCode).json({
         success: false,

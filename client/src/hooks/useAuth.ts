@@ -5,16 +5,22 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useUserStore } from "../store/authStore";
+import { QueryKeys } from "../utils/queryKeys";
 
 export const useLogin = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const setAccessToken = useUserStore((state) => state.setAccessToken);
+  const setUser = useUserStore((state) => state.setUser);
 
   return useMutation<LoginResponse, AuthError, LoginData>({
     mutationFn: loginUser,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setAccessToken(data.accessToken);
+      setUser(data.user);
       toast.success("Login successful!");
-      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.USER_PROFILE] });
+
       navigate("/dashboard");
     },
     onError: (error) => {
@@ -44,7 +50,7 @@ export const useUserProfile = () => {
   const { setUser } = useUserStore();
 
   const { data } = useQuery<UserProfile, AuthError>({
-    queryKey: ["userProfile"],
+    queryKey: [QueryKeys.USER_PROFILE],
     queryFn: fetchUserProfile,
   });
 
@@ -66,7 +72,7 @@ export const useLogout = () => {
     mutationFn: logoutUser,
     onSuccess: () => {
       clearUser();  
-      queryClient.removeQueries({ queryKey: ["userProfile"] }); 
+      queryClient.removeQueries({ queryKey: [QueryKeys.USER_PROFILE] }); 
       toast.success("Logged out successfully!");
       navigate("/login");
     },

@@ -1,47 +1,50 @@
-export interface User {
-    id: string;
-    username: string;
-    email: string;
-  }
+export type User = {
+  id: string;
+  username: string;
+  email: string;
+};
 
-  export interface UserProfile {
-    username: string;
-    numericID: number;
-  }
-  
-  export interface RegisterData {
-    username: string;
-    email: string;
-    password: string;
-  }
-  
-  export interface RegisterResponse {
-    message: string;
-    user: User;
-  }
-  
-  export interface AuthError {
-    message: string;
-    response?: {
-      data?: {
-        message?: string;
-      };
+export type UserProfile = {
+  username: string;
+  numericID: number;
+};
+
+export type RegisterData = {
+  username: string;
+  email: string;
+  password: string;
+};
+
+export type RegisterResponse = {
+  message: string;
+  user: User;
+};
+
+export type AuthError = {
+  message: string;
+  response?: {
+    data?: {
+      message?: string;
     };
-  }
+  };
+};
 
-  export interface LoginData {
-    email: string;
-    password: string;
-  }
-  
-  export interface LoginResponse {
-    message: string;
-    token: string;
-  }
-  
-  export enum AuthStatus {
-    PENDING = "PENDING",
-    SUCCESS = "SUCCESS",
-    ERROR = "ERROR",
-  }
-  
+export type LoginData = {
+  email: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  message: string;
+  accessToken: string;
+  user: {
+    numericID: number;
+    username: string;
+  };
+};
+
+export enum AuthStatus {
+  PENDING = "PENDING",
+  SUCCESS = "SUCCESS",
+  ERROR = "ERROR",
+}

@@ -9,7 +9,7 @@ import corsOptions from './utils/corsConfig';
 import errorHandler from './middleware/errorHandler';
 import authRoutes from './routes/authRoutes';
 import postRoutes from './routes/postRoutes';
-
+import { authMiddleware } from './middleware/authHandler';
 
 
 connectDB();
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 
 //routes
 app.use('/', authRoutes);
-app.use('/', postRoutes);
+app.use('/',authMiddleware, postRoutes);
 
 
 app.use(errorHandler);

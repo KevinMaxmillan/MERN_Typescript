@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/user';
-import { CustomError } from '../hooks/customError';
 import asyncHandler from 'express-async-handler';
 
 export const getUserFromToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -11,8 +10,9 @@ export const getUserFromToken = asyncHandler(async (req: Request, res: Response,
     
     const user = await User.findById(decoded.id);
     if (!user) {
-        throw new CustomError('User not found', 404);
+        throw new Error('User not found');
     }
 
     return user.id;
 });
+

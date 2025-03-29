@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import Post from '../models/post';
-import { CustomError } from '../hooks/customError';
 import asyncHandler from 'express-async-handler';
 import { getUserFromToken } from '../middleware/findUser'; 
 
@@ -12,7 +11,7 @@ export const createPost = asyncHandler(async (req: Request, res: Response, next:
     const { title, description } = req.body;
 
     if (!title || !description) {
-        return next(new CustomError('All fields are required', 400));
+        throw new Error('All fields are required.');
     }
 
     const post = await Post.create({
@@ -36,7 +35,7 @@ export const getAllPosts = asyncHandler(async (req: Request, res: Response, next
     const posts = await Post.find({ user: userId });
 
     if (!posts || posts.length === 0) {
-        return next(new CustomError('No posts found for this user.', 404));
+        throw new Error('No posts found.');
     }
 
     res.status(200).json({
@@ -53,7 +52,7 @@ export const deletePost = asyncHandler(async (req: Request, res: Response, next:
     const post = await Post.findOneAndDelete({ postID: postID, user: userId });
 
     if (!post) {
-        return next(new CustomError('Post not found or not authorized to delete.', 404));
+        throw new Error('Post not found');
     }
 
     res.status(200).json({
@@ -69,7 +68,7 @@ export const updatePost = asyncHandler(async (req: Request, res: Response, next:
     const { title, description } = req.body;
 
     if (!title || !description) {
-        return next(new CustomError('All fields are required.', 400));
+        throw new Error('All fields are required.');
     }
 
     const updatedPost = await Post.findOneAndUpdate(
@@ -79,7 +78,7 @@ export const updatePost = asyncHandler(async (req: Request, res: Response, next:
     );
 
     if (!updatedPost) {
-        return next(new CustomError('Post not found or not authorized to update.', 404));
+        throw new Error('Post not found or not authorized.');
     }
 
     res.status(200).json({

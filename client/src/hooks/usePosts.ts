@@ -4,13 +4,14 @@ import { Post } from "../interfaces/postsInterfaces";
 import { AuthError } from "../interfaces/authInterfaces";
 import { useUserStore } from '../store/authStore';
 import { toast } from "react-hot-toast";
+import { QueryKeys } from "../utils/queryKeys";
 
 
 export const useUserPosts = () => {
   const { user } = useUserStore(); 
 
   return useQuery<Post[], AuthError>({
-    queryKey: ["userPosts"],
+    queryKey: [QueryKeys.USER_POSTS],
     queryFn: fetchUserPosts,
     enabled: !!user?.numericID, 
   });
@@ -23,7 +24,7 @@ export const useAddPost = () => {
     mutationFn: addPost,
     onSuccess: () => {
       toast.success("Post added successfully!");
-      queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.USER_POSTS] });
     },
     onError: () => {
       toast.error("Failed to add post.");
@@ -38,7 +39,7 @@ export const useAddPost = () => {
       mutationFn: ({ postID, updatedData }) => updatePost(postID, updatedData),
       onSuccess: () => {
         toast.success("Post updated successfully!");
-        queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+        queryClient.invalidateQueries({ queryKey: [QueryKeys.USER_POSTS] });
       },
       onError: () => {
         toast.error("Failed to update post.");
@@ -53,7 +54,7 @@ export const useAddPost = () => {
       mutationFn: (postID) => deletePost(postID),
       onSuccess: () => {
         toast.success("Post deleted successfully!");
-        queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+        queryClient.invalidateQueries({ queryKey: [QueryKeys.USER_POSTS] });
       },
       onError: () => {
         toast.error("Failed to delete post.");

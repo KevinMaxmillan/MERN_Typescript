@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useUserProfile } from "../hooks/useAuth";
 import { useUserPosts, useAddPost, useUpdatePost, useDeletePost } from "../hooks/usePosts";
 import { Post } from "../interfaces/postsInterfaces";
+import { useSearchPosts } from "../hooks/useSearch"; 
+
 import {
   DashboardContainer,
   WelcomeMessage,
@@ -19,6 +21,7 @@ import {
   EditPostForm,
   ModalOverlay,
   ModalContainer,
+  SearchInput,
 } from "../styles/Dashboard";
 
 export default function Dashboard() {
@@ -33,31 +36,21 @@ export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
+  const { filteredPosts, handleSearch } = useSearchPosts(posts || []);
 
   const handleAddPost = () => {
     if (!user) return;
-  
-    addPostMutation.mutate({
-      title: newPost.title,
-      description: newPost.description, 
-    });
-  
+    addPostMutation.mutate(newPost);
     setNewPost({ title: "", description: "" });
     setIsModalOpen(false);
   };
 
   const handleUpdatePost = () => {
     if (!editPost) return;
-  
-    updatePostMutation.mutate({
-      postID: editPost.postID,
-      updatedData: { title: editPost.title, description: editPost.description },
-    });
-  
+    updatePostMutation.mutate({ postID: editPost.postID, updatedData: editPost });
     setEditPost(null);
     setIsModalOpen(false);
   };
-  
 
   const openAddPostModal = () => {
     setIsModalOpen(true);
@@ -65,7 +58,7 @@ export default function Dashboard() {
   };
 
   const openEditPostModal = (post: Post) => {
-    setEditPost(post);  
+    setEditPost(post);
     setIsModalOpen(true);
     setIsEditMode(true);
   };
@@ -74,15 +67,16 @@ export default function Dashboard() {
     <DashboardContainer>
       <WelcomeMessage>Welcome, {user?.username}!</WelcomeMessage>
 
+      <SearchInput type="text" placeholder="Search posts..." onChange={handleSearch} />
+
       <h2>Your Posts</h2>
       {isLoading && <p>Loading posts...</p>}
-      {/* {isError && <p>Failed to load posts.</p>} */}
 
       <AddPostButton onClick={openAddPostModal}>Add New Post</AddPostButton>
 
-      <PostsContainer>
-        {posts?.length ? (
-          posts.map((post) => (
+      {filteredPosts?.length ? (
+        <PostsContainer>
+          {filteredPosts.map((post) => (
             <PostItem key={post.postID}>
               <PostTitle>{post.title}</PostTitle>
               <PostBody>{post.description}</PostBody>
@@ -91,47 +85,28 @@ export default function Dashboard() {
                 <CancelButton onClick={() => openEditPostModal(post)}>Edit</CancelButton>
               </div>
             </PostItem>
-          ))
-        ) : (
-          !isLoading && <p>No posts found.</p>
-        )}
-      </PostsContainer>
+          ))}
+        </PostsContainer>
+      ) : (
+        !isLoading && <p>No posts found.</p>
+      )}
 
-      {/* Modal for Add Post and Edit Post */}
       {isModalOpen && (
         <ModalOverlay>
           <ModalContainer>
             {!isEditMode ? (
               <AddPostForm>
                 <h2>Add New Post</h2>
-                <Input
-                  type="text"
-                  placeholder="Title"
-                  value={newPost.title}
-                  onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-                />
-                <Textarea
-                  placeholder="Body"
-                  value={newPost.description}
-                  onChange={(e) => setNewPost({ ...newPost, description: e.target.value })}
-                />
+                <Input type="text" placeholder="Title" value={newPost.title} onChange={(e) => setNewPost({ ...newPost, title: e.target.value })} />
+                <Textarea placeholder="Body" value={newPost.description} onChange={(e) => setNewPost({ ...newPost, description: e.target.value })} />
                 <ActionButton onClick={handleAddPost}>Add Post</ActionButton>
                 <CancelButton onClick={() => setIsModalOpen(false)}>Cancel</CancelButton>
               </AddPostForm>
             ) : (
               <EditPostForm>
                 <h2>Edit Post</h2>
-                <Input
-                  type="text"
-                  placeholder="Title"
-                  value={editPost?.title}
-                  onChange={(e) => setEditPost({ ...editPost!, title: e.target.value })}
-                />
-                <Textarea
-                  placeholder="Body"
-                  value={editPost?.description}
-                  onChange={(e) => setEditPost({ ...editPost!, description: e.target.value })}
-                />
+                <Input type="text" placeholder="Title" value={editPost?.title} onChange={(e) => setEditPost({ ...editPost!, title: e.target.value })} />
+                <Textarea placeholder="Body" value={editPost?.description} onChange={(e) => setEditPost({ ...editPost!, description: e.target.value })} />
                 <ActionButton onClick={handleUpdatePost}>Update Post</ActionButton>
                 <CancelButton onClick={() => setIsModalOpen(false)}>Cancel</CancelButton>
               </EditPostForm>

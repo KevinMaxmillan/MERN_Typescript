@@ -179,3 +179,19 @@ export const CancelButton = styled.button`
     background-color: #0056b3;
   }
 `;
+
+
+export const SearchInput = styled.input`
+  padding: 8px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  outline: none;
+  
+  &:focus {
+    border-color: #007bff;
+  }
+`;

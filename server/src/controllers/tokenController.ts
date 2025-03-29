@@ -1,6 +1,5 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import User, { IUser } from '../models/user';
-import { CustomError } from '../hooks/customError';
 import asyncHandler from 'express-async-handler';
 import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/winstonLogger';
@@ -19,7 +18,7 @@ export const generateRefreshToken = (user: IUser): string => {
     return jwt.sign(
         { id: user.id, email: user.email },
         process.env.REFRESH_TOKEN_SECRET as string,
-        { expiresIn: '1d' }
+        { expiresIn: '10m' }
     );
 };
 
@@ -28,20 +27,20 @@ export const refreshToken = asyncHandler(async (req: Request, res: Response, nex
     const { refreshToken } = req.cookies;
 
     if (!refreshToken) {
-        return next(new CustomError('Refresh token missing', 401));
+        throw new Error('Refresh token missing');
     }
 
    
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as JwtPayload;
 
         if (!decoded.id) {
-            return next(new CustomError('Invalid token payload', 403));
+            throw new Error('Invalid token payload');
         }
 
      
         const user: IUser | null = await User.findById(decoded.id);
         if (!user) {
-            return next(new CustomError('User not found', 404));
+            throw new Error('user not found');
         }
 
         const newAccessToken = generateAccessToken(user);

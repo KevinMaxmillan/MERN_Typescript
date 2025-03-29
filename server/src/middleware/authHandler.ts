@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
-import { CustomError } from '../hooks/customError';
+
 
 
 interface AuthRequest extends Request {
@@ -12,12 +12,16 @@ export const authMiddleware = asyncHandler((req: AuthRequest, res: Response, nex
     const accessToken = req.cookies?.accessToken;
 
     if (!accessToken) {
-        return next(new CustomError('Unauthorized', 401)); 
+        const error = new Error('Unauthorized');
+        (error as any).statusCode = 401; 
+        return next(error); 
     }
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string, (err: jwt.VerifyErrors | null, decoded: JwtPayload | string | undefined) => {
         if (err || !decoded) {
-            return next(new CustomError('Invalid or expired token', 403)); 
+            const error = new Error('Invalid or expired token');
+            (error as any).statusCode = 403; 
+            return next(error); 
         }
 
         req.user = decoded;

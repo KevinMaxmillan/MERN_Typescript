@@ -4,7 +4,6 @@ import asyncHandler from 'express-async-handler';
 import { hashPassword, comparePassword } from '../middleware/hashedPasswordHandler';
 import User, { IUser } from '../models/user';
 import logger from '../utils/winstonLogger';
-import { CustomError } from '../hooks/customError';
 import { generateAccessToken, generateRefreshToken } from './tokenController';
 import jwt from 'jsonwebtoken';
 
@@ -14,14 +13,15 @@ export const registerUser = asyncHandler(async (req: Request, res: Response, nex
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-        return next(new CustomError('All fields are required.', 400)); 
+        throw new Error('All fields are required.'); 
     }
 
     const existingUser: IUser | null = await User.findOne({ email });
     if (existingUser) {
-        return next(new CustomError('User already exists.', 400)); 
+        throw new Error('User already exists.');
     }
 
+    debugger 
     const hashedPassword: string = await hashPassword(password);
 
     const newUser = new User({
@@ -49,19 +49,19 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return next(new CustomError('Email and password are required.', 400));
+        throw new Error('Email and password are required.');
     }
 
     const user: IUser | null = await User.findOne({ email });
 
     if (!user) {
-        return next(new CustomError('Invalid email or password.', 401));
+        throw new Error('Invalid email or password.');
     }
 
     const isPasswordValid = await comparePassword(password, user.password);
 
     if (!isPasswordValid) {
-        return next(new CustomError('Invalid email or password.', 401));
+        throw new Error('Invalid email or password.');
     }
 
     const accessToken = generateAccessToken(user);
@@ -106,7 +106,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
 export const logoutUser = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         
         if (!req.cookies?.refreshToken) {
-            return next(new CustomError('No active session found.', 400));
+            throw new Error('No active session found.');
         }
 
 
@@ -145,7 +145,7 @@ export const getProfile = asyncHandler(async (req: Request, res: Response, next:
         const user = await User.findById(decoded.id).select('-password -refreshToken');
         
         if (!user) {
-            return next(new CustomError('User not found', 404));
+            throw new Error('user not found');
         }
 
         res.status(200).json({
